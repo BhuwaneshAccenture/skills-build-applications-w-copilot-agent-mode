@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import connectDB from './db.js'
 
 dotenv.config()
 
@@ -16,7 +17,15 @@ app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'OK', message: 'OctoFit Tracker API is running' })
 })
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
+const start = async () => {
+  await connectDB()
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`)
+  })
+}
+
+start().catch((error) => {
+  console.error('Failed to start server:', error)
+  process.exit(1)
 })
